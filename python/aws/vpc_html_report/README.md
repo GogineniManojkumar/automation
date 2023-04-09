@@ -49,4 +49,4 @@ optional arguments:
 
 ## Demo
 
-![alt text](https://github.com/GogineniManojkumar/automation/tree/main/python/aws/vpc_html_report/img/demo.jpg?raw=true)
+![alt text](https://github.com/GogineniManojkumar/automation/blob/main/python/aws/vpc_html_report/img/demo.JPG?raw=true)
