@@ -343,9 +343,17 @@ def main():
         #render the html with data
         html = generate_html(html_data)
         #print(html)
-        with open(f'{account_name+"_"+args.vpc_name}.html', 'w') as f:
+        html_file_name = (account_name+"_"+args.vpc_name)
+        with open(f'{html_file_name}.html', 'w') as f:
             f.write(html)
 
+        print()
+        print("an HTML Report has been generator with vpc information. Please find the details below !!!!!")
+        print("")
+        print('Report File Name:  '+html_file_name+'.html')
+        print('Report File Path:  '+ os.path.abspath(html_file_name+'.html') )
+        print("")
+        print("Have a Good Day!!!")
     except Exception as error:
         log.error(error)
 
