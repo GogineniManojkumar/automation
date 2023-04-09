@@ -1,0 +1,403 @@
+{% if data|length > 0 %}
+<!DOCTYPE html>
+<html>
+    <style>
+        table, th, td {
+          border:1px solid black;
+          border-collapse: collapse;
+        }
+        th {
+            height: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+        td {
+            font-weight: normal;
+            text-align: center;
+            height: 30px;
+        }
+        ul {
+            list-style-type:none;
+        }
+    </style>
+    <head>
+    	<title>{{ data['VpcName'] }} | {{ data['VpcId'] }}</title>
+        <h2><center>{{ data['VpcName'] }} | {{ data['VpcId'] }} </center></h2>
+        <h3><center>{{ data['account_name'] }} | {{ data['account_number'] }} </center></h3>
+    </head>
+    <body>
+        {% if data[VpcId] != ' ' %}
+        <h3>VPC:</h3>
+        <table style="width:50%" >
+                <tr style="background-color:#D6EEEE">
+                    <th>VPC ID</th>
+                    <th>VPC NAME</th>
+                    <th>VPC CIDR</th>
+                    <th>Is Default</th>
+                </tr>
+                <tr>
+                    <td>{{ data['VpcId']}}</td>
+                    <td>{{ data['VpcName']}}</td>
+                    <td>{{ data['CidrBlock']}}</td>
+                    <td>{{ data['IsDefault']}}</td>
+                </tr>
+        </table>
+        {% endif %}
+
+        {% if data['Subnets']|length > 0 %}
+        <table style="width:70%" >
+        <h3>Subnets:</h3>
+            <tr style="background-color:#D6EEEE">
+                <th>Subnet Name</th>
+                <th>Subnet ID</th>
+                <th>Subnet CIDR</th>
+                <th>Availability Zone</th>
+                <th>State</th>
+                <th>Available IpAddress Count</th>
+            </tr>
+            {% for subnet in data['Subnets']%}
+            <tr>
+                <td>{{ subnet['SubnetName']}}</td>
+                <td>{{ subnet['SubnetId']}}</td>
+                <td>{{ subnet['CidrBlock']}}</td>
+                <td>{{ subnet['AvailabilityZone']}}</td>
+                <td>{{ subnet['State']}}</td>
+                <td>{{ subnet['AvailableIpAddressCount']}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% endif %}
+
+        {% if data['RouteTables']|length > 0 %}
+        <table style="width:70%">
+          <h3>RouteTables:</h3>
+              <tr style="background-color:#D6EEEE">
+                  <th>RoueTable Name</th>
+                  <th>RoueTable ID</th>
+                  <th>Associated Subnets</th>
+                  <th colspan="2">Routes</th>
+              </tr>
+              {% for rt in data['RouteTables']%}
+              <tr>
+                  <td>{{ rt['RoueTableName']}}</td>
+                  <td>{{ rt['RoueTableId']}}</td>
+                  <td>
+                      {% if rt['SubnetIds'] %}
+                        <ul>
+                          {% for subnet_id in rt['SubnetIds'] %}
+                            <li>{{ subnet_id }}</li>
+                          {% endfor %}
+                        </ul>
+                      {% else %}
+                        None
+                      {% endif %}
+                    </td>
+                    <td>
+                      <ul>
+                        {% for route in rt['Routes'] %}
+                          <li>{{ route['Route'] }} <b>  via  </b> {{ route['RouteVia'] }}</li>
+                        {% endfor %}
+                      </ul>
+                    </td>
+              </tr>
+              {% endfor %}
+        </table>
+        {% endif %}
+
+        {% if data['IGW']|length > 0 %}
+        <table style="width:50%" >
+            <h3>Internet Gateway:</h3>
+              <tr style="background-color:#D6EEEE">
+                  <th>Internet Gateway Name</th>
+                  <th>Internet Gateway ID</th>
+                  <th>Internet Gateway State</th>
+              </tr>
+              {% for igw in data['IGW'] %}
+              <tr>
+                  <td>{{ igw['igwName']}}</td>
+                  <td>{{ igw['igwID']}}</td>
+                  <td>{{ igw['igwState']}}</td>
+              </tr>
+              {% endfor %}
+        </table>
+        {% endif %}
+
+        {% if data['VpcEndpoints']|length > 0 %}
+        <table style="width:90%" >
+          <h3>VPC Endpoints:</h3>
+            <tr style="background-color:#D6EEEE">
+                <th>Endpoint Name</th>
+                <th>Endpoint ID</th>
+                <th>Endpoint Type</th>
+                <th>Endpoint Service</th>
+                <th>Endpoint State</th>
+                <th>RouteTables</th>
+                <th>Creation Time</th>
+            </tr>
+            {% for endpoint in data['VpcEndpoints'] %}
+            <tr>
+                <td>{{ endpoint['VpcEndpointName']}}</td>
+                <td>{{ endpoint['VpcEndpointId']}}</td>
+                <td>{{ endpoint['VpcEndpointType']}}</td>
+                <td>{{ endpoint['ServiceName']}}</td>
+                <td>{{ endpoint['State']}}</td>
+                <td>
+                  <ul>
+                    {% for rt_id in endpoint['RouteTableIds'] %}
+                      <li>{{ rt_id }}</li>
+                    {% endfor %}
+                  </ul>
+                </td>
+                <td>{{ endpoint['CreationTime']}}</td>
+            </tr>
+            {% endfor %}
+      </table>
+      {% endif %}
+
+      {% if data['NatGw']|length > 0 %}
+      <table style="width:90%" >
+        <h3>NAT Gateways:</h3>
+          <tr style="background-color:#D6EEEE">
+              <th>Name</th>
+              <th>ID</th>
+              <th>Private IP</th>
+              <th>Public IP</th>
+              <th>Connection Type</th>
+              <th>Subnet</th>
+              <th>State</th>
+          </tr>
+          {% for natgw in data['NatGw'] %}
+          <tr>
+              <td>{{ natgw['natGwName']}}</td>
+              <td>{{ natgw['natGwID']}}</td>
+              <td>{{ natgw['natGwPrivateIp']}}</td>
+              <td>{{ natgw['natGwPublicIp']}}</td>
+              <td>{{ natgw['natGwType']}}</td>
+              <td>{{ natgw['natGwSubnet']}}</td>
+              <td>{{ natgw['natGwState']}}</td>
+          </tr>
+          {% endfor %}
+      </table>
+      {% endif %}
+
+      {% if data['VpcPeerConnections']|length > 0 %}
+      <table style="width:90%" >
+        <h3>VPC Peering Connections:</h3>
+          <tr style="background-color:#D6EEEE">
+              <th>Name</th>
+              <th>ID</th>
+              <th>State</th>
+              <th colspan="4">Accepter</th>
+              <th colspan="4">Requester</th>
+          </tr>
+          <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th style="background-color:#D6EEEE">VPC ID</th>
+            <th style="background-color:#D6EEEE" >CIDR Block</th>
+            <th style="background-color:#D6EEEE" >Owner ID</th>
+            <th style="background-color:#D6EEEE" >Region</th>
+            <th style="background-color:#D6EEEE" >VPC ID</th>
+            <th style="background-color:#D6EEEE" >CIDR Block</th>
+            <th style="background-color:#D6EEEE" >Owner ID</th>
+            <th style="background-color:#D6EEEE" >Region</th>
+          </tr>
+          {% for peer in data['VpcPeerConnections'] %}
+          <tr>
+              <td>{{ peer['VpcPeerName']}}</td>
+              <td>{{ peer['VpcPeerId']}}</td>
+              <td>{{ peer['VpcPeerState']}}</td>
+              {% for accepter in peer['VpcPeerAccepter'] %}
+              <td>{{ accepter['VpcId']}}</td>
+              <td>{{ accepter['CidrBlock']}}</td>
+              <td>{{ accepter['OwnerId']}}</td>
+              <td>{{ accepter['Region']}}</td>
+              {% endfor %}
+              {% for requester in peer['VpcPeerRequester'] %}
+              <td>{{ requester['VpcId']}}</td>
+              <td>{{ requester['CidrBlock']}}</td>
+              <td>{{ requester['OwnerId']}}</td>
+              <td>{{ requester['Region']}}</td>
+              
+              {% endfor %}
+          </tr>
+          {% endfor %}
+      </table>
+      {% endif %}
+
+      {% if data['NACLs']|length > 0 %}
+      <table style="width:80%" >
+        <h3>Network ACLs:</h3>
+          <tr style="background-color:#D6EEEE">
+              <th>Name</th>
+              <th>ID</th>
+              <th>isDefault</th>
+              <th>Subnets Associated</th>
+              <th colspan="6" >Rules</th>
+          </tr>
+          <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th style="background-color:#D6EEEE">Rule Number</th>
+            <th style="background-color:#D6EEEE" >Rule Action</th>
+            <th style="background-color:#D6EEEE" >Protocol</th>
+            <th style="background-color:#D6EEEE" >Cidr Block</th>
+            <th style="background-color:#D6EEEE" >Port Range</th>
+            <th style="background-color:#D6EEEE" >Egress</th>
+          </tr>
+          {% for nacl in data['NACLs'] %}
+          <tr>
+              <td>{{ nacl['naclName']}}</td>
+              <td>{{ nacl['naclId']}}</td>
+              <td>{{ nacl['isDefault']}}</td>
+              <td>
+                {% if  nacl['naclSubnets'] | length > 0 %}
+                <ul>
+                  {% for id in nacl['naclSubnets'] %}
+                  <li>{{ id }}</li>
+                  {% endfor %}
+                </ul>
+                {% endif %}
+              </td>
+              {% if  nacl['naclRules'] | length > 0 %}
+              {% for key in nacl['naclRules'][0].keys() %}
+              <td>
+                <ul>
+                  {% for rule in nacl['naclRules'] %}
+                  <li>{{ rule[ key ] }}</li>
+                  {% endfor %}
+                </ul>
+              </td>
+              {% endfor %}
+              {% endif %}
+          </tr>
+          {% endfor %}
+      </table>
+      {% endif %}
+
+      {% if data['TGWs']|length > 0 %}
+      <table style="width:100%" >
+        <h3>Transit Gateways:</h3>
+          <tr style="background-color:#D6EEEE">
+              <th>Name</th>
+              <th>ID</th>
+              <th>State</th>
+              <th>Owner</th>
+              <th>Default RouteTable</th>
+              <th>Defaul RouteTable ID</th>
+              <th>Default Propagation</th>
+              <th>Default Propagation RT ID</th>
+              <th>DNS Support</th>
+          </tr>
+          {% for tgw in data['TGWs'] %}
+          <tr>
+              <td>{{ tgw['TgwName']}}</td>
+              <td>{{ tgw['TgwId']}}</td>
+              <td>{{ tgw['TgwState']}}</td>
+              <td>{{ tgw['TgwOwner']}}</td>
+              <td>{{ tgw['TgwDefaultRTEnable']}}</td>
+              <td>{{ tgw['TgwDefaultRTId']}}</td>
+              <td>{{ tgw['TgwPropagationEnable']}}</td>
+              <td>{{ tgw['TgwPropagationRTId']}}</td>
+              <td>{{ tgw['TgwDnsSupport']}}</td>
+          </tr>
+          {% endfor %}
+      </table>
+      {% endif %}
+
+      {% if data['TGWAttachments']|length > 0 %}
+      <table style="width:100%" >
+        <h3>Transit Gateway VPC Attachments:</h3>
+          <tr style="background-color:#D6EEEE">
+              <th>Name</th>
+              <th>ID</th>
+              <th>Transit Gateway ID</th>
+              <th>VPC ID</th>
+              <th>VPC Owner</th>
+              <th>State</th>
+              <th>Subnets</th>
+              <th>Appliance Mode</th>
+              <th>DNS Support</th>
+          </tr>
+          {% for attachment in data['TGWAttachments'] %}
+          <tr>
+              <td>{{ attachment['AttachmentName']}}</td>
+              <td>{{ attachment['AttachmentId']}}</td>
+              <td>{{ attachment['TgwId']}}</td>
+              <td>{{ attachment['VpcId']}}</td>
+              <td>{{ attachment['VpvOwner']}}</td>
+              <td>{{ attachment['State']}}</td>
+              <td>
+                <ul>
+                  {% for id in attachment['Subnets'] %}
+                  <li>{{ id }}</li>
+                  {% endfor %}
+                </ul>
+              </td>
+              <td>{{ attachment['ApplianceMode']}}</td>
+              <td>{{ attachment['DnsSupport']}}</td>
+          </tr>
+          {% endfor %}
+      </table>
+      {% endif %}
+
+      {% if data['TGWRTs']|length > 0 %}
+      <table style="width:80%" >
+        <h3>Transit Gateway RouteTables:</h3>
+          <tr style="background-color:#D6EEEE">
+              <th>Name</th>
+              <th>ID</th>
+              <th>Transit Gateway ID</th>
+              <th>State</th>
+              <th>IsDefault</th>
+              <th>IsDefaultPropagated</th>
+          </tr>
+          {% for rt in data['TGWRTs'] %}
+          <tr>
+              <td>{{ rt['TgwRTName']}}</td>
+              <td>{{ rt['TgwRTId']}}</td>
+              <td>{{ rt['TgwId']}}</td>
+              <td>{{ rt['State']}}</td>
+              <td>{{ rt['IsDefault']}}</td>
+              <td>{{ rt['IsDefaultPropagated']}}</td>
+          </tr>
+          {% endfor %}
+      </table>
+      {% endif %}
+
+      {% if data['TGWRTRoutes']|length > 0 %}
+      <table style="width:80%" >
+        <h3>Transit Gateway Routes:</h3>
+          <tr style="background-color:#D6EEEE">
+              <th>TGW RouteTable ID</th>
+              <th>Destination CidrBlock</th>
+              <th>Type</th>
+              <th>State</th>
+              <th>Attachment Resource Type</th>
+              <th>Resource ID</th>
+              <th>TGW Attachment ID</th>
+          </tr>
+          {% for rts in data['TGWRTRoutes'] %}
+          <tr>
+              <td>{{ rts['TgwRTId']}}</td>
+              <td>{{ rts['DestinationCidrBlock']}}</td>
+              <td>{{ rts['Type']}}</td>
+              <td>{{ rts['State']}}</td>
+              <td>{{ rts['AttachmentResourceType']}}</td>
+              <td>{{ rts['VpcId']}}</td>
+              <td>{{ rts['TgwAttachmentId']}}</td>
+          </tr>
+          {% endfor %}
+      </table>
+      {% endif %}
+
+    </body>
+
+    <footer>
+        <p><em>Generated at {{ timestamp }}</em></p>
+    </footer>
+</html>
+{% endif %}
