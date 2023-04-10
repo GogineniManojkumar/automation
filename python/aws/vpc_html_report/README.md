@@ -16,7 +16,7 @@ as of now, the script fetches the following resources information: AWS VPC, Subn
 
 
 # Execution
-python vpc_info.py  - profile <AWS CLI Profile Name> - vpc_name <VPC_NAME>
+python vpc_info.py  - profile <AWS CLI Profile Name> -- vpc_name <VPC_NAME>
 
 ## Usage/Examples
 
