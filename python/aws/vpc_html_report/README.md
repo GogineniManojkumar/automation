@@ -44,7 +44,7 @@ optional arguments:
 
 ## Documentation
 
-[Documentation](https://linktodocumentation)
+[Documentation](https://medium.com/@manojkumarcloud/export-aws-vpc-infomation-to-html-report-using-python-and-boto3-946b7d1951d9)
 
 
 ## Demo
