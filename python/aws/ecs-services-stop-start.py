@@ -1,3 +1,39 @@
+# Lambda Permissions Policy
+"""
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "ecspermissions",
+            "Effect": "Allow",
+            "Action": [
+                "ecs:UpdateService",
+                "ecs:ListTasks",
+                "ecs:DescribeServices",
+                "ecs:DescribeTasks",
+                "ecs:ListServices"
+            ],
+            "Resource": "arn:aws:ecs:*:*:service/*/*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": "logs:CreateLogGroup",
+            "Resource": "arn:aws:logs:us-east-1::*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents"
+            ],
+            "Resource": [
+                "arn:aws:logs:us-east-1:*:log-group:/aws/lambda/<LOGS GROUP NAME>:*"
+            ]
+        }
+    ]
+}
+
+"""
 import sys
 import boto3
 import botocore
